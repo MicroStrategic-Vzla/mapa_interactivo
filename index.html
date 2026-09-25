@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo - Parroquia El Paraíso</title>
+
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Estilos personalizados para las fichas popup */
+        .leaflet-popup-content-wrapper {
+            padding: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            width: 250px !important;
+        }
+
+        .ficha-container {
+            width: 100%;
+            background: #ffffff;
+        }
+
+        .ficha-header {
+            background: linear-gradient(135deg, #1b365d, #2c5282);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .ficha-body {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .ficha-foto {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1b365d;
+            margin: 0 auto 10px auto;
+            display: block;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .ficha-badge {
+            display: inline-block;
+            background-color: #e2e8f0;
+            color: #2d3748;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .ficha-datos {
+            text-align: left;
+            font-size: 12px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .ficha-datos p {
+            margin: 4px 0;
+        }
+
+        .ficha-datos strong {
+            color: #1a202c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inicializar el mapa centrado en la Parroquia El Paraíso, Caracas
+        const map = L.map('map').setView([10.4880, -66.9360], 15);
+
+        // Capa de mapa base (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Lista de personas y sus datos en distintos sectores de El Paraíso
+        const personas = [
+            {
+                nombre: "Pedro Pérez",
+                cedula: "13.567.000",
+                telefono: "04123457723",
+                jerarquia: "S2",
+                locacion: "La Quebradita",
+                lat: 10.4905,
+                lng: -66.9382,
+                foto: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"
+            },
+            {
+                nombre: "María Rodríguez",
+                cedula: "16.890.123",
+                telefono: "04141234567",
+                jerarquia: "S1",
+                locacion: "Av. Páez (Plaza Madariaga)",
+                lat: 10.4870,
+                lng: -66.9305,
+                foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"
+            },
+            {
+                nombre: "Carlos Mendoza",
+                cedula: "15.432.876",
+                telefono: "04249876543",
+                jerarquia: "SS",
+                locacion: "Sector Las Quintas",
+                lat: 10.4815,
+                lng: -66.9390,
+                foto: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150"
+            },
+            {
+                nombre: "Ana Gómez",
+                cedula: "18.234.567",
+                telefono: "04165554321",
+                jerarquia: "S2",
+                locacion: "Urb. Bella Vista",
+                lat: 10.4930,
+                lng: -66.9320,
+                foto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150"
+            }
+        ];
+
+        // Recorrer los datos e insertar los marcadores en el mapa
+        personas.forEach((persona, index) => {
+            const popupContent = `
+                <div class="ficha-container">
+                    <div class="ficha-header">Ficha Personal</div>
+                    <div class="ficha-body">
+                        <img src="${persona.foto}" alt="${persona.nombre}" class="ficha-foto">
+                        <div class="ficha-badge">Jerarquía: ${persona.jerarquia}</div>
+                        <div class="ficha-datos">
+                            <p><strong>Nombre:</strong> ${persona.nombre}</p>
+                            <p><strong>Cédula:</strong> ${persona.cedula}</p>
+                            <p><strong>Teléfono:</strong> ${persona.telefono}</p>
+                            <p><strong>Locación:</strong> ${persona.locacion}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const marker = L.marker([persona.lat, persona.lng]).addTo(map);
+            marker.bindPopup(popupContent);
+
+            // Abrir por defecto el popup de Pedro Pérez (primer registro)
+            if (index === 0) {
+                marker.openPopup();
+            }
+        });
+    </script>
+</body>
+
+</html>
